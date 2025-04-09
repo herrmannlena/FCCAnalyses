@@ -351,7 +351,7 @@ def runPlots(
     rt = f"#sqrt{{s}} = {script_module.energy:.1f} TeV,   " f'{config["int_lumi_label"]}'
 
     if "ee" in script_module.collider:
-        lt = "FCC-ee Simulation"
+        lt = "       FCC-ee Simulation"
         rt = f"#sqrt{{s}} = {script_module.energy:.1f} GeV,   " f'{config["int_lumi_label"]}'
 
     customLabel = ""
@@ -624,7 +624,7 @@ def runPlotsHistmaker(config: dict[str, any], args, hist_name: str, param, hist_
     rt = f"#sqrt{{s}} = {param.energy} TeV, {intLumi}"
 
     if "ee" in param.collider:
-        lt = "FCC-ee Simulation"
+        lt = "       FCC-ee Simulation"
         rt = f"#sqrt{{s}} = {param.energy} GeV,   {intLumi}"
 
     customLabel = ""
@@ -842,7 +842,7 @@ def runPlotsHistmaker2D(config: dict[str, any], args, hist_name: str, param, his
         rightText = f"#sqrt{{s}} = {param.energy:.1f} TeV,   {intLumi}"
 
         if "ee" in param.collider:
-            leftText = "FCC-ee Simulation"
+            leftText = "       FCC-ee Simulation"
             rightText = f"#sqrt{{s}} = {param.energy:.1f} GeV,   {intLumi}"
 
         latex = ROOT.TLatex()

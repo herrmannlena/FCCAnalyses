@@ -6,7 +6,6 @@ processList = {
     'p8_ee_qqgamma_ecm240':    {'fraction':1, 'crossSection': 6.9, 'inputDir': '/afs/cern.ch/work/l/lherrman/private/HiggsGamma/data'},  #what are the exact values here?
     'p8_ee_ccgamma_ecm240':    {'fraction':1, 'crossSection': 2.15, 'inputDir': '/afs/cern.ch/work/l/lherrman/private/HiggsGamma/data'},  #what are the exact values here?
     'p8_ee_bbgamma_ecm240':    {'fraction':1, 'crossSection': 2.35, 'inputDir': '/afs/cern.ch/work/l/lherrman/private/HiggsGamma/data'},  #what are the exact values here?
-    'p8_ee_ZH_ecm240':    {'fraction':1, 'crossSection': 0.2, 'inputDir': '/afs/cern.ch/work/l/lherrman/private/HiggsGamma/data'},  #what are the exact values here?
     'p8_ee_WW_ecm240':    {'fraction':1},  
     'p8_ee_ZZ_ecm240':    {'fraction':1}, 
     'p8_ee_eegamma_ecm240':    {'fraction':1, 'crossSection': 190, 'inputDir': '/afs/cern.ch/work/l/lherrman/private/HiggsGamma/data'},  #what are the exact values here?
@@ -144,10 +143,15 @@ def build_graph(df, dataset):
     #########
     ### CUT 1: Photons must be isolated
     #########
-    
-    df = df.Filter("photons_sel_iso.size()>0 ")  
+    df = df.Filter("photons_n ==1 ")  
     df = df.Define("cut1", "1")
     results.append(df.Histo1D(("cutFlow", "", *bins_count), "cut1"))
+
+
+    
+    df = df.Filter("photons_sel_iso.size()>0 ")  
+    df = df.Define("cut2", "2")
+    results.append(df.Histo1D(("cutFlow", "", *bins_count), "cut2"))
     
     results.append(df.Histo1D(("photons_p_cut_1", "",  130, 0, 130), "photons_iso_p"))
     results.append(df.Histo1D(("photons_n_cut_1", "", *bins_a_n), "photons_iso_n"))
@@ -167,7 +171,6 @@ def build_graph(df, dataset):
 
     #energy cut
     df = df.Define("photons_boosted", "FCCAnalyses::ReconstructedParticle::sel_p(60,100)(iso_highest_p)") # looked okay from photons all
-    #df = df.Define("photons_boosted", "FCCAnalyses::ReconstructedParticle::sel_p(60,100)(iso_highest_p)")
 
     df = df.Define("photons_boosted_p", "FCCAnalyses::ReconstructedParticle::get_p(photons_boosted)") # is this correct?
     df = df.Define("photons_boosted_n","FCCAnalyses::ReconstructedParticle::get_n(photons_boosted)") 
@@ -179,116 +182,13 @@ def build_graph(df, dataset):
     #########
     
     df = df.Filter("photons_boosted.size()>0 ")  
-    df = df.Define("cut2", "2")
-    results.append(df.Histo1D(("cutFlow", "", *bins_count), "cut2"))
+    df = df.Define("cut3", "3")
+    results.append(df.Histo1D(("cutFlow", "", *bins_count), "cut3"))
     
     results.append(df.Histo1D(("photons_p_cut_2", "",  130, 0, 130), "photons_boosted_p"))
     results.append(df.Histo1D(("photons_n_cut_2", "", *bins_a_n), "photons_boosted_n"))
     results.append(df.Histo1D(("photons_cos_theta_cut_2", "", 50, -1, 1), "photons_boosted_cos_theta"))
     results.append(df.Histo1D(("electrons_cos_theta_cut_2", "", 50, -1, 1), "electrons_ordered_cos_theta"))
  
-
     
-     #########
-    ### CUT 3: Cos Theta cut
-    #########
-    df = df.Filter("ROOT::VecOps::All(abs(photons_boosted_cos_theta) < 0.9) ") 
-   
-    df = df.Define("cut3", "3")
-    results.append(df.Histo1D(("cutFlow", "", *bins_count), "cut3"))
-    
-    results.append(df.Histo1D(("photons_p_cut_3", "", 130, 0, 130), "photons_boosted_p"))
-    results.append(df.Histo1D(("photons_n_cut_3", "", *bins_a_n), "photons_boosted_n"))
-    results.append(df.Histo1D(("photons_cos_theta_cut_3", "", 50, -1, 1), "photons_boosted_cos_theta"))
-    results.append(df.Histo1D(("electrons_cos_theta_cut_3", "", 50, -1, 1), "electrons_ordered_cos_theta"))
-
-
-    df = df.Define("recopart_no_gamma", "FCCAnalyses::ReconstructedParticle::remove(ReconstructedParticles, photons_boosted)",)
-    df = df.Define("recopart_no_gamma_n","FCCAnalyses::ReconstructedParticle::get_n(recopart_no_gamma)") 
-   
- 
-    results.append(df.Histo1D(("recopart_no_gamma_n_cut_0", "", 60, 0, 60), "recopart_no_gamma_n"))
-
-    """
-    #########
-    ### CUT 4: Cos Theta cut on ee to reduce bhabhar
-    #########
-    df = df.Filter("electrons_ordered_cos_theta.size()<2 || (abs(electrons_ordered_cos_theta)[0]<0.8 && abs(electrons_ordered_cos_theta)[1]<0.8)") 
-    
-    df = df.Define("cut4", "4")
-    results.append(df.Histo1D(("cutFlow", "", *bins_count), "cut4"))
- 
-    results.append(df.Histo1D(("photons_p_cut_4", "", 130, 0, 130), "photons_boosted_p"))
-    results.append(df.Histo1D(("photons_n_cut_4", "", *bins_a_n), "photons_boosted_n"))
-    results.append(df.Histo1D(("photons_cos_theta_cut_4", "", 50, -1, 1), "photons_boosted_cos_theta"))
-    results.append(df.Histo1D(("electrons_cos_theta_cut_4", "", 50, -1, 1), "electrons_ordered_cos_theta"))
-    """
-
-     # recoil plot
-    df = df.Define("gamma_recoil", "FCCAnalyses::ReconstructedParticle::recoilBuilder(240)(photons_boosted)") 
-    df = df.Define("gamma_recoil_m", "FCCAnalyses::ReconstructedParticle::get_mass(gamma_recoil)[0]") # recoil mass
-    results.append(df.Histo1D(("gamma_recoil_m_cut_3", "", 170, 80, 250), "gamma_recoil_m"))
-    
-    #########
-    ### CUT 4: require at least 6 reconstructed particles (except gamma)
-    #########
-    df = df.Filter(" recopart_no_gamma_n > 5") 
-    
-    df = df.Define("cut4", "4")
-    results.append(df.Histo1D(("cutFlow", "", *bins_count), "cut4"))
- 
-    results.append(df.Histo1D(("recopart_no_gamma_n_cut_4", "", 60, 0, 60), "recopart_no_gamma_n"))
-    
-
-    
-    results.append(df.Histo1D(("gamma_recoil_m_cut_4", "", 170, 80, 250), "gamma_recoil_m"))
-   
-
-
-    #########
-    ### CUT 5: gamma recoil cut
-    #########
-    df = df.Filter("110 < gamma_recoil_m && gamma_recoil_m < 150") 
-    #df = df.Filter("115 < gamma_recoil_m && gamma_recoil_m < 170") 
-
-    df = df.Define("cut5", "5")
-    results.append(df.Histo1D(("cutFlow", "", *bins_count), "cut5"))
-
-    results.append(df.Histo1D(("gamma_recoil_m_signal_cut", "", 40, 110, 150), "gamma_recoil_m"))
-    #results.append(df.Histo1D(("gamma_recoil_m_signal_cut", "", 64, 116, 170), "gamma_recoil_m"))
-   
-    #########
-    ### CUT 6: gamma recoil cut tight
-    #########
-    #df = df.Filter("123.5 < gamma_recoil_m && gamma_recoil_m < 126.5") 
-    df = df.Filter("123.5 < gamma_recoil_m && gamma_recoil_m < 126.5") 
-
-    df = df.Define("cut6", "6")
-    results.append(df.Histo1D(("cutFlow", "", *bins_count), "cut6"))
-
-    results.append(df.Histo1D(("gamma_recoil_m_tight_cut", "", 70, 80, 150), "gamma_recoil_m"))
-
-   
-    #define further variables for plotting
-    #df = df.Define("photons_all_p", "FCCAnalyses::ReconstructedParticle::get_p(photons_all)")
-    #df = df.Define("photons_boosted_p", "FCCAnalyses::ReconstructedParticle::get_p(photons_boosted)")
-    #df = df.Define("photons_boosted_n","FCCAnalyses::ReconstructedParticle::get_n(photons_boosted)")  #number of photons per event
-    
-   
-    #select highest energetic photon
-
-    ########################
-    # Final histograms
-    ########################
-    #results.append(df.Histo1D(("photons_all_p", "", 100, 0, 100), "photons_all_p"))
-   # results.append(df.Histo1D(("photons_boosted_p", "", *bins_a_p), "photons_boosted_p"))
-    #results.append(df.Histo1D(("photons_n", "", *bins_a_n), "photons_n"))
-    #results.append(df.Histo1D(("photons_boosted_n", "", *bins_a_n), "photons_boosted_n"))
-    
-    #results.append(df.Histo1D(("zmumu_recoil_m", "", *bins_recoil), "zmumu_recoil_m"))   # see how recoil determined
-   
-    #need to select the highest energetic photon
-
     return results, weightsum
-
-

@@ -3,7 +3,7 @@ import ROOT
 # global parameters
 intLumi        = 1.
 intLumiLabel   = "L = 10.8 ab^{-1}"
-ana_tex        = 'e^{+}e^{-} #rightarrow AH'
+ana_tex        = 'e^{+}e^{-} #rightarrow #gamma H'
 delphesVersion = '3.4.2'
 energy         = 240.0
 collider       = 'FCC-ee'
@@ -24,25 +24,26 @@ colors['ZZ'] = ROOT.kAzure-9
 colors['Aee'] = ROOT.kViolet+3
 colors['Atautau'] = ROOT.kOrange
 colors['Amumu'] = ROOT.kMagenta
+colors['ZH'] = ROOT.kGray+2
 
 #procs = {}
 #procs['signal'] = {'ZH':['wzp6_ee_mumuH_ecm240']}
 #procs['backgrounds'] =  {'WW':['p8_ee_WW_ecm240'], 'ZZ':['p8_ee_ZZ_ecm240']}
 procs = {}
 procs['signal'] = {'AH':['p8_ee_Hgamma_ecm240']}
-#procs['backgrounds'] =  {'WW':['p8_ee_WW_mumu_ecm240'], 'ZZ':['p8_ee_ZZ_mumubb_ecm240']}
-procs['backgrounds'] =  {'Aqq':['p8_ee_qqgamma_ecm240'], 'Acc':['p8_ee_ccgamma_ecm240'], 'Abb':['p8_ee_bbgamma_ecm240'], 'Atautau':['p8_ee_tautaugamma_ecm240'], 'Amumu':['p8_ee_mumugamma_ecm240'], 'WW':['p8_ee_WW_ecm240'], 'ZZ':['p8_ee_ZZ_ecm240'], 'Aee':['p8_ee_eegamma_ecm240']}
+procs['backgrounds'] =  {'Aqq':['p8_ee_qqgamma_ecm240'], 'Acc':['p8_ee_ccgamma_ecm240'], 'Abb':['p8_ee_bbgamma_ecm240'], 'Atautau':['p8_ee_tautaugamma_ecm240'], 'Amumu':['p8_ee_mumugamma_ecm240'], 'Aee':['p8_ee_eegamma_ecm240'], 'WW':['p8_ee_WW_ecm240'], 'ZZ':['p8_ee_ZZ_ecm240'], 'ZH':['p8_ee_ZH_ecm240']}
 
 legend = {}
-legend['AH'] = 'AH'
-legend['Aqq'] = 'Aqq'
-legend['Acc'] = 'Acc'
-legend['Abb'] = 'Abb'
+legend['AH'] = '#gamma H'
+legend['Aqq'] = '#gamma q#bar{q}'
+legend['Acc'] = '#gamma c#bar{c}'
+legend['Abb'] = '#gamma b#bar{b}'
 legend['WW'] = 'WW'
 legend['ZZ'] = 'ZZ'
-legend['Aee'] = 'Aee'
-legend['Atautau'] = 'Atautau'
-legend['Amumu'] = 'Amumu'
+legend['Aee'] = '#gamma e^{+} e^{-}'
+legend['Atautau'] = '#gamma #tau^{+} #tau^{-}'
+legend['Amumu'] = '#gamma #mu^{+} #mu^{-}'
+legend['ZH'] = 'ZH'
 
 
 hists = {}
@@ -51,37 +52,54 @@ hists2D = {}
 
 
 
+
 hists["cutFlow"] = {
     "input":   "cutFlow",
     "output":   "cutFlow",
     "logy":     True,
-    "stack":    True,
+    "stack":   True,
     "xmin":     0,
-    "xmax":     6,
+    "xmax":     7,
     "ymin":     1e4,
     "ymax":     1e11,
-    "xtitle":   ["All events", "isolation", "60 GeV < p(#gamma) < 100 GeV", "|cos(#theta)|<0.9", "cut ee", "110 GeV < m_recoil < 140 GeV", "123.5 GeV < m_recoil < 126.5 GeV"],
+    #"xtitle":   ["All events", "iso < 0.2", "60  < p_{#gamma} < 100 ", "|cos(#theta)_{#gamma}|<0.9", "n particles > 5"],
+    "xtitle":   ["All events", "iso < 0.2", "60  < p_{#gamma} < 100 ", "|cos(#theta)_{#gamma}|<0.9", "n particles > 5", "110 < m_{recoil} < 140 ", "123.5  < m_{recoil} < 126.5 "],
     "ytitle":   "Events ",
-    "scaleSig": 1
 }
 
-hists["gamma_recoil_m"] = {
-    "input":   "gamma_recoil_m",
-    "output":   "gamma_recoil_m",
+
+hists["gamma_recoil_m_cut_3"] = {
+    "input":   "gamma_recoil_m_cut_3",
+    "output":   "gamma_recoil_m_cut_3",
     "logy":     False,
     "stack":    True,
-    "xmin":     80,
-    "xmax":     150,
+    "xmin":     100,
+    "xmax":     170,
     "xtitle":   "Recoil (GeV)",
     "ytitle":   "Events ",
     "scaleSig": 1000,
     "density": False
-
 }
 
-hists["gamma_recoil_m_norm"] = {
-    "input":   "gamma_recoil_m",
-    "output":   "gamma_recoil_m_norm",
+
+hists["gamma_recoil_m_cut_4"] = {
+    "input":   "gamma_recoil_m_cut_4",
+    "output":   "gamma_recoil_m_cut_4",
+    "logy":     False,
+    "stack":    True,
+    "xmin":     80,
+    "xmax":     200,
+    "xtitle":   "Recoil (GeV)",
+    "ytitle":   "Events ",
+   # "scaleSig": 1000,
+    "density": True
+}
+
+
+
+hists["gamma_recoil_m_norm_cut_4"] = {
+    "input":   "gamma_recoil_m_cut_4",
+    "output":   "gamma_recoil_m_norm_cut_4",
     "logy":     False,
     "stack":    False,
     "xmin":     80,
@@ -98,21 +116,35 @@ hists["gamma_recoil_m_signal_cut"] = {
     "output":   "gamma_recoil_m_signal_cut",
     "logy":     False,
     "stack":    True,
-    "xmin":     80,
+    "xmin":     110,
     "xmax":     150,
     "xtitle":   "Recoil (GeV)",
     "ytitle":   "Events ",
+    "density": False,
     "scaleSig": 1000,
+
+}
+"""
+hists["gamma_recoil_m_signal_cut"] = {
+    "input":   "gamma_recoil_m_signal_cut",
+    "output":   "gamma_recoil_m_signal_cut",
+    "logy":     False,
+    "stack":    True,
+    #"xmin":     110,
+    "xmin":     116,
+    "xmax":     150,
+    "xtitle":   "Recoil (GeV)",
+    "ytitle":   "Events ",
     "density": False
 
 }
-
+"""
 hists["gamma_recoil_m_tight_cut"] = {
     "input":   "gamma_recoil_m_tight_cut",
     "output":   "gamma_recoil_m_tight_cut",
     "logy":     False,
     "stack":    True,
-    "xmin":     80,
+    "xmin":     115,
     "xmax":     150,
     "xtitle":   "Recoil (GeV)",
     "ytitle":   "Events ",
@@ -124,7 +156,7 @@ hists["gamma_recoil_m_tight_cut"] = {
 hists["electrons_p_baseline"] = {
     "input":   "electrons_p_baseline",
     "output":   "electrons_p_baseline",
-    "logy":     False,
+    "logy":     True,
     "stack":    False,
     "xmin":     0,
     "xmax":     130,
@@ -145,7 +177,6 @@ hists["photons_p_cut_0"] = {
     "xtitle":   "photons_p_cut_0",
     "ytitle":   "Events ",
     "density": False,
-    "scaleSig": 1000,
     "density": True
 }
 
@@ -157,11 +188,9 @@ hists["photons_p_cut_1"] = {
     "stack":    True,
     "xmin":     0,
     "xmax":     130,
-    "xtitle":   "photons_p_cut_1",
-    "ytitle":   "Events ",
-    "density": False,
-    "scaleSig": 1000,
-    "density": True
+    "xtitle":   "p(\gamma) [GeV]",
+    "ytitle":   "Normalized Events",
+    "density": True,
 }
 
 hists["photons_p_cut_2"] = {
@@ -175,7 +204,7 @@ hists["photons_p_cut_2"] = {
     "ytitle":   "Events ",
     "density": False,
     "scaleSig": 1000,
-    "density": True
+    "density": False
 }
 
 hists["photons_p_cut_3"] = {
@@ -189,9 +218,9 @@ hists["photons_p_cut_3"] = {
     "ytitle":   "Events ",
     "density": False,
     "scaleSig": 1000,
-    "density": True
+    "density": False
 }
-
+"""
 hists["photons_p_cut_4"] = {
     "input":   "photons_p_cut_4",
     "output":   "photons_p_cut_4",
@@ -205,7 +234,7 @@ hists["photons_p_cut_4"] = {
     "scaleSig": 1000,
     "density": True
 }
-
+"""
 hists["electrons_n_baseline"] = {
     "input":   "electrons_n_baseline",
     "output":   "electrons_n_baseline",
@@ -265,7 +294,7 @@ hists["photons_n_cut_3"] = {
     "ytitle":   "Events ",
     "density": True
 }
-
+"""
 hists["photons_n_cut_4"] = {
     "input":   "photons_n_cut_4",
     "output":   "photons_n_cut_4",
@@ -277,73 +306,43 @@ hists["photons_n_cut_4"] = {
     "ytitle":   "Events ",
     "density": True
 }
-
-hists["electrons_cos_theta"] = {
-    "input":   "electrons_cos_theta",
-    "output":   "electrons_cos_theta",
+"""
+hists["recopart_no_gamma_n_cut_0"] = {
+    "input":   "recopart_no_gamma_n_cut_0",
+    "output":   "recopart_no_gamma_n_cut_0",
     "logy":     False,
     "stack":    True,
-    "xmin":     -1,
-    "xmax":     1,
-    "xtitle":   "electrons_cos_theta",
-    "ytitle":   "Events ",
-     "scaleSig": 10000,
-     "density": False
+    "xmin":     0,
+    "xmax":     60,
+    "xtitle":   "# reco particles",
+    "ytitle":   "Normalized Events",
+    "density": True
 }
 
-hists["electrons_cos_theta_cut_1"] = {
-    "input":   "electrons_cos_theta_cut_1",
-    "output":   "electrons_cos_theta_cut_1",
+hists["recopart_no_gamma_n_cut_4"] = {
+    "input":   "recopart_no_gamma_n_cut_4",
+    "output":   "recopart_no_gamma_n_cut_4",
     "logy":     False,
     "stack":    True,
-    "xmin":     -1,
-    "xmax":     1,
-    "xtitle":   "electrons_cos_theta_cut_1",
+    "xmin":     0,
+    "xmax":     60,
+    "xtitle":   "recopart_no_gamma_n_cut_4",
     "ytitle":   "Events ",
-     "scaleSig": 10000,
-     "density": False
+    "density": False
 }
 
-hists["electrons_cos_theta_cut_2"] = {
-    "input":   "electrons_cos_theta_cut_2",
-    "output":   "electrons_cos_theta_cut_2",
-    "logy":     False,
+hists["photon_isolation"] = {
+    "input":   "photon_isolation",
+    "output":   "photon_isolation",
+    "logy":     True,
     "stack":    True,
-    "xmin":     -1,
-    "xmax":     1,
-    "xtitle":   "electrons_cos_theta_cut_2",
-    "ytitle":   "Events ",
-     "scaleSig": 10000,
-     "density": False
+    "xmin":     0,
+    "xmax":     10,
+    "xtitle":   "iso(\gamma)_{\Delta R< 0.5}",
+    "ytitle":   "Normalized Events ",
+    "density": True
 }
 
-
-
-hists["electrons_cos_theta_cut_3"] = {
-    "input":   "electrons_cos_theta_cut_3",
-    "output":   "electrons_cos_theta_cut_3",
-    "logy":     False,
-    "stack":    True,
-    "xmin":     -1,
-    "xmax":     1,
-    "xtitle":   "electrons_cos_theta_cut_3",
-    "ytitle":   "Events ",
-     "scaleSig": 10000,
-     "density": False
-}
-
-hists["electrons_cos_theta_cut_4"] = {
-    "input":   "electrons_cos_theta_cut_4",
-    "output":   "electrons_cos_theta_cut_4",
-    "logy":     False,
-    "stack":    True,
-    "xmin":     -1,
-    "xmax":     1,
-    "xtitle":   "electrons_cos_theta_cut_4",
-    "ytitle":   "Events ",
-     "scaleSig": 10000,
-     "density": False
-}
 
 hists["photons_cos_theta_cut_0"] = {
     "input":   "photons_cos_theta_cut_0",
@@ -377,12 +376,12 @@ hists["photons_cos_theta_cut_2"] = {
     "input":   "photons_cos_theta_cut_2",
     "output":   "photons_cos_theta_cut_2",
     "logy":     False,
-    "stack":    False,
+    "stack":    True,
     "xmin":     -1,
     "xmax":     1,
-    "xtitle":   "photons_cos_theta_cut_2",
-    "ytitle":   "Events ",
-     "scaleSig": 10000,
+    "xtitle":   "cos(\Theta)_{\gamma}",
+    "ytitle":   "Normalized Events",
+   #  "scaleSig": 10000,
      "density": True
 }
 
@@ -399,7 +398,7 @@ hists["photons_cos_theta_cut_3"] = {
      "scaleSig": 10000,
      "density": True
 }
-
+"""
 hists["photons_cos_theta_cut_4"] = {
     "input":   "photons_cos_theta_cut_4",
     "output":   "photons_cos_theta_cut_4",
@@ -412,7 +411,7 @@ hists["photons_cos_theta_cut_4"] = {
      "scaleSig": 10000,
      "density": True
 }
-
+"""
 """
 hists["photons_boosted_p"] = {
     "input":   "photons_boosted_p",

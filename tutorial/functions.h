@@ -254,17 +254,22 @@ float  print_momentum(Vec_rp  in) {
     
 
     ROOT::VecOps::RVec<float> ptype = FCCAnalyses::ReconstructedParticle::get_p(in);
-    //auto ptype1 = FCCAnalyses::ReconstructedParticle::get_p(in)[0];
-    std::cout <<  " momentum: " << ptype << std::endl;
+    auto ptype1 = FCCAnalyses::ReconstructedParticle::get_n(in);
+    std::cout <<  " number: " << ptype1 << std::endl;
    
 
     auto max_it = std::max_element(ptype.begin(), ptype.end());
     auto index = std::distance(ptype.begin(), max_it);
-
+    
     if (max_it != ptype.end()) {
         std::cout << "Maximum value: " << *max_it << " at index: " << index << std::endl;
     } else {
         std::cout << "The vector is empty!" << std::endl;
+    }
+    if(index != 0) {
+        std::cout << "not sorted!" << std::endl;
+        std::cout <<  " momentum: " << ptype << std::endl;
+        std::cout << "Maximum value: " << *max_it << " at index: " << index << std::endl;
     }
    
     
@@ -272,15 +277,50 @@ float  print_momentum(Vec_rp  in) {
 }
 
 
+ROOT::VecOps::RVec<edm4hep::ReconstructedParticleData>  sort_by_energy(Vec_rp particles) {
 
-
-
-ROOT::VecOps::RVec<edm4hep::ReconstructedParticleData>  get_high_momentum_photon(Vec_rp  in) {
+    ROOT::VecOps::RVec<edm4hep::ReconstructedParticleData>  sorted = particles; // make a copy
     
-    std::cout << "in function" << std::endl;
-   
-    return in;
+    for (size_t i = 0; i < sorted.size(); ++i) {
+        // Assume the current element is the one with maximum momentum
+        size_t maxIndex = i;
+        for (size_t j = i + 1; j < sorted.size(); ++j) {
+            // Compare momentum values; if a particle with a higher momentum is found, record its index
+            if (sorted[j].energy > sorted[maxIndex].energy) {
+                maxIndex = j;
+            }
+        }
+        // If a particle with a higher momentum was found, swap it with the current element
+        if (maxIndex != i) {
+            std::swap(sorted[i], sorted[maxIndex]);
+        }
+    }
+
+    // Return only the highest energetic element if available
+    if (!sorted.empty()) {
+        return ROOT::VecOps::RVec<edm4hep::ReconstructedParticleData>{sorted[0]};
+    }
+
+    return sorted;
 }
+
+
+ROOT::VecOps::RVec<float> ee_costheta_max(ROOT::VecOps::RVec<float>  in) {
+
+    //std::cout << "in: " << typeid(in).name() << std::endl;
+
+    ROOT::VecOps::RVec<float> copy = in;
+    
+   // std::cout <<  " costheta " << in << std::endl;
+    std::sort(copy.begin(), copy.end(), [](float a, float b) {
+        return std::abs(a) > std::abs(b);
+    });
+   //std::cout << "out: " << typeid(copy).name() << std::endl;
+  
+    return copy ;
+}
+
+
 
 
 // calculate the cosine(theta) of the missing energy vector
