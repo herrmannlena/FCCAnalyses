@@ -179,8 +179,29 @@ def build_graph(df, dataset):
     df = df.Define("jetcharge0", "JetUtils::get_charge_i(0,jetQ_k05)") 
     df = df.Define("jetcharge1", "JetUtils::get_charge_i(1,jetQ_k05)") 
 
-    results.append(df.Histo1D(("jetcharge0", "", 100, -5, 5), "jetcharge0"))
-    results.append(df.Histo1D(("jetcharge1", "", 100, -5, 5), "jetcharge1"))
+    df = df.Define("jetcharge0_k1", "JetUtils::get_charge_i(0,jetQ_k1)") 
+    df = df.Define("jetcharge1_k1", "JetUtils::get_charge_i(1,jetQ_k1)") 
+
+    df = df.Define("jetcharge0_k01", "JetUtils::get_charge_i(0,jetQ_k01)") 
+    df = df.Define("jetcharge1_k01", "JetUtils::get_charge_i(1,jetQ_k01)") 
+
+    results.append(df.Histo1D(("jetcharge0", "", 40, -2, 2), "jetcharge0"))
+    results.append(df.Histo1D(("jetcharge1", "", 40, -2, 2), "jetcharge1"))
+
+    results.append(df.Histo1D(("jetcharge0_k01_bf", "", 40, -2, 2), "jetcharge0_k01"))
+    results.append(df.Histo1D(("jetcharge1_k01_bf", "", 40, -2, 2), "jetcharge1_k01"))
+
+
+    df = df.Define("abs_sum_kappa05", "JetUtils::return_abs_sum(jetcharge0,jetcharge1)") 
+    results.append(df.Histo1D(("abs_sum_kappa05", "", 100, -5, 5), "abs_sum_kappa05"))
+
+    df = df.Define("abs_sum_kappa1", "JetUtils::return_abs_sum(jetcharge0_k1,jetcharge1_k1)") 
+    results.append(df.Histo1D(("abs_sum_kappa1", "", 100, -5, 5), "abs_sum_kappa1"))
+
+    df = df.Define("abs_sum_kappa01", "JetUtils::return_abs_sum(jetcharge0_k01,jetcharge1_k01)") 
+    results.append(df.Histo1D(("abs_sum_kappa01", "", 100, -5, 5), "abs_sum_kappa01"))
+
+   
    
    
     df = df.Define("photons_p", "FCCAnalyses::ReconstructedParticle::get_p(photons_all)") 
@@ -483,6 +504,17 @@ def build_graph(df, dataset):
     results.append(df.Histo1D(("gamma_recoil_m_signal_cut", "", 18, 122, 140), "gamma_recoil_m"))
     #results.append(df.Histo1D(("gamma_recoil_m_signal_cut", "", 40, 115, 150), "gamma_recoil_m"))
     #results.append(df.Histo1D(("gamma_recoil_m_signal_cut", "", 64, 116, 170), "gamma_recoil_m"))
+
+    results.append(df.Histo1D(("jetcharge0_after", "", 40, -2, 2), "jetcharge0"))
+    results.append(df.Histo1D(("jetcharge1_after", "", 40, -2, 2), "jetcharge1"))
+
+    results.append(df.Histo1D(("jetcharge0_k1", "", 40, -2, 2), "jetcharge0_k1"))
+    results.append(df.Histo1D(("jetcharge1_k1", "", 40, -2, 2), "jetcharge1_k1"))
+
+    results.append(df.Histo1D(("jetcharge0_k01", "", 40, -2, 2), "jetcharge0_k01"))
+    results.append(df.Histo1D(("jetcharge1_k01", "", 40, -2, 2), "jetcharge1_k01"))
+
+    results.append(df.Histo1D(("abs_sum_kappa05_after", "", 50, 0, 5), "abs_sum_kappa05"))
 
    
     #########

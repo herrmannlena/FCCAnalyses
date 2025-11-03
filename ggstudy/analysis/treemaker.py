@@ -86,7 +86,7 @@ includePaths = ["functions.h", "jetcharge.h"]
 #inputDir    = "/afs/cern.ch/work/l/lherrman/private/HiggsGamma/data"
 
 #Optional: output directory, default is local running directory
-outputDir   =  os.path.join(config['outputDir'], str(ecm),'treemaker/ggstudy/', config_jj['outputDir_sub'], 'H{}{}'.format(args.flavor.lower(), args.flavor.lower()))
+outputDir   =  os.path.join(config['outputDir'], str(ecm),'treemaker/ggstudy/trkcharge/', config_jj['outputDir_sub'], 'H{}{}'.format(args.flavor.lower(), args.flavor.lower()))
 print(outputDir)
 
 # optional: ncpus, default is 4, -1 uses all cores available
@@ -267,7 +267,9 @@ class RDFanalysis:
             collections_nogamma,
             jetClusteringHelper.jets,
             jetClusteringHelper.constituents,
+            jetClusteringHelper.indices,
         )
+        #can I get indices? in jetClusteringHelper
 
      
 
@@ -290,7 +292,15 @@ class RDFanalysis:
         )
 
         df = df.Define("jetQ_k05",
-               "JetUtils::jet_charge(0.5)({}, {})".format(jetClusteringHelper.jets, jetClusteringHelper.constituents)
+               "JetUtils::jet_charge(0.5)({}, {}, {}, {}, {})".format(jetClusteringHelper.jets, jetClusteringHelper.constituents, jetClusteringHelper.indices, collections_nogamma["PFParticles"], collections_nogamma["TrackState"])
+        )
+
+        df = df.Define("jetQ_k1",
+               "JetUtils::jet_charge(1)({}, {}, {}, {}, {})".format(jetClusteringHelper.jets, jetClusteringHelper.constituents, jetClusteringHelper.indices, collections_nogamma["PFParticles"], collections_nogamma["TrackState"])
+        )
+
+        df = df.Define("jetQ_k01",
+               "JetUtils::jet_charge(0.1)({}, {}, {}, {}, {})".format(jetClusteringHelper.jets, jetClusteringHelper.constituents, jetClusteringHelper.indices, collections_nogamma["PFParticles"], collections_nogamma["TrackState"])
         )
 
 
@@ -309,7 +319,9 @@ class RDFanalysis:
             "jj_m",
             "recopart_no_gamma",
             "jets_p4",
-            "jetQ_k05"
+            "jetQ_k05",
+            "jetQ_k01",
+            "jetQ_k1",
         ]
 
         ## outputs jet scores and constituent breakdown

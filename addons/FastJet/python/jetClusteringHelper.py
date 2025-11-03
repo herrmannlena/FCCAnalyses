@@ -38,6 +38,7 @@ class ExclusiveJetClusteringHelper:
 
         self.jets = jet
         self.constituents = jetc
+        self.indices = _jetc
 
         self.definition = dict()
 
